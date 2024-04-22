@@ -8,6 +8,7 @@ using Vector = Mylib::Math::Vector<float, 2>;
 
 inline constexpr float UNI_MASS = 1.0f;
 inline constexpr float GRAVITY = 9.8f;
+inline constexpr float FRICTION = 0.8f;
 
 inline constexpr int FORWARD = 1;
 inline constexpr int BACKWARD = -1;
@@ -19,24 +20,19 @@ class RigidBody
 {
 public:
     Vector m_Force;
-    RigidBody(){
-        m_Mass = UNI_MASS;
-        m_Gravity = GRAVITY;
-    }
+    RigidBody() = default;
 
-    //Setter Gravity & Mass
+    //Setters
     inline void SetMass(float mass) {m_Mass = mass;}
     inline void SetGravity(float gravity) {m_Gravity = gravity;}
+    inline void SetFriction(double Fr) {m_Friction = Fr;}
+
 
     //Force
     inline void ApplyForce(Vector F) {m_Force = F;}
     inline void ApplyForceX(float fX) {m_Force.x = fX;}
     inline void ApplyForceY(float fY) {m_Force.y = fY;}
     inline void UnsetForce() {m_Force.set_zero();}
-
-    //Friction
-    inline void ApplyFriction(double Fr) {m_Friction = Fr;}
-    inline void UnsetFriction() {m_Friction = 0;}
 
     //Getters
     inline float GetMass() {return m_Mass;}
@@ -64,13 +60,13 @@ public:
     }
 
 private:
-    float m_Gravity;
-    float m_Mass;
+    float m_Gravity {GRAVITY};
+    float m_Mass {UNI_MASS};
+    float m_Friction {FRICTION};
 
-	Vector m_Velocity;
-    Vector m_Acceleration;
+	Vector m_Velocity {};
+    Vector m_Acceleration {};
 
-    float m_Friction;
 };
 
 #endif //__RIGIDBODY_H__

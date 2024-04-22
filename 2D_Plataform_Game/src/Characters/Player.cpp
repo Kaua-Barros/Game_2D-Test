@@ -8,7 +8,7 @@ Player::Player(const Properties& props, std::string TextureID) : Character(props
     m_TextureID = TextureID;
     m_Animation = new Animation();
     m_RigidBody = new RigidBody();
-    m_RigidBody->ApplyFriction(0.8);
+    m_RigidBody->SetFriction(0.8);
     m_RigidBody->ApplyForceX(0);
     m_RigidBody->ApplyForceY(0);
 }
@@ -24,11 +24,12 @@ void Player::Draw()
 
 void Player::Update(float dt)
 {
+    //SDL_Log("%f %s %f", m_RigidBody->Acceleration().x, " Time:", dt);
     m_RigidBody->ApplyForceX(m_RigidBody->Acceleration().x);
+    //SDL_Log("%f %s %f", m_Position.x, " ", m_Position.y);
     Player::Moviment();
     m_RigidBody->UpdateX(dt, m_Position);
     //m_RigidBody->UpdateY(dt, m_Position);
-
     m_Animation->Update();
 }
 

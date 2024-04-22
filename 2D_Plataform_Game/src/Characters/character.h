@@ -8,7 +8,6 @@ class Character : public GameObject
 {
 public:
     Character(const Properties& props): GameObject(props) {}
-    //Character(const Properties& props): GameObject(props) = default; Não funcionou
 
 protected:
     std::string m_Name;
