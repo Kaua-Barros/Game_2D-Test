@@ -4,7 +4,7 @@
 #include <string>
 #include <SDL.h>
 
-class Animation 
+class Animation
 {
 public:
     Animation() = default;

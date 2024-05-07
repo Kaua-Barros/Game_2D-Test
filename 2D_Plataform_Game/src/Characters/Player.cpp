@@ -3,7 +3,7 @@
 #include "..\Inputs\Input.h"
 #include <SDL.h>
 
-Player::Player(const Properties& props, std::string TextureID) : Character(props)
+Player::Player(const Properties &props, std::string TextureID) : Character(props)
 {
     m_TextureID = TextureID;
     m_Animation = new Animation();
@@ -13,7 +13,8 @@ Player::Player(const Properties& props, std::string TextureID) : Character(props
     m_RigidBody->ApplyForceY(0);
 }
 
-Player::~Player(){
+Player::~Player()
+{
     TextureManager::GetInstance()->CleanTexture();
 }
 
@@ -24,12 +25,12 @@ void Player::Draw()
 
 void Player::Update(float dt)
 {
-    //SDL_Log("%f %s %f", m_RigidBody->Acceleration().x, " Time:", dt);
+    // SDL_Log("%f %s %f", m_RigidBody->Acceleration().x, " Time:", dt);
     m_RigidBody->ApplyForceX(m_RigidBody->Acceleration().x);
-    //SDL_Log("%f %s %f", m_Position.x, " ", m_Position.y);
+    // SDL_Log("%f %s %f", m_Position.x, " ", m_Position.y);
     Player::Moviment();
     m_RigidBody->UpdateX(dt, m_Position);
-    //m_RigidBody->UpdateY(dt, m_Position);
+    // m_RigidBody->UpdateY(dt, m_Position);
     m_Animation->Update();
 }
 
@@ -53,7 +54,8 @@ void Player::Moviment()
     {
         m_RigidBody->ApplyForceY(7 * UPWARD);
     }
-    if(Input::GetInstance()->GetKeyDown(SDL_SCANCODE_A) && Input::GetInstance()->GetKeyDown(SDL_SCANCODE_D)){
+    if (Input::GetInstance()->GetKeyDown(SDL_SCANCODE_A) && Input::GetInstance()->GetKeyDown(SDL_SCANCODE_D))
+    {
         m_Animation->SetProps("player_StandBy", 1, 7, 400, 38, 48, SDL_FLIP_HORIZONTAL);
     }
 }

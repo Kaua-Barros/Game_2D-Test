@@ -19,7 +19,8 @@ public:
         Y = y;
         Flip = flip;
         Width = width;
-        Heigth = height;    }
+        Heigth = height;
+    }
 
 public:
     float Width, Heigth;
@@ -30,14 +31,13 @@ public:
 class GameObject : public IObject
 {
 public:
-	Vector getPosition() const { return m_Position; }
+    Vector getPosition() const { return m_Position; }
 
-public:
     virtual ~GameObject() override = default;
-    GameObject(const Properties& props)
-    : m_Width(props.Width), 
-    m_Height(props.Heigth), 
-    m_Flip(props.Flip) 
+    GameObject(const Properties &props)
+        : m_Width(props.Width),
+          m_Height(props.Heigth),
+          m_Flip(props.Flip)
     {
         m_Position.x = props.X;
         m_Position.y = props.Y;
@@ -45,7 +45,7 @@ public:
 
 protected:
     Vector m_Position;
-    
+
     float m_Width, m_Height;
     SDL_RendererFlip m_Flip;
 };

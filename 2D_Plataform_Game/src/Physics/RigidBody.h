@@ -22,51 +22,52 @@ public:
     Vector m_Force;
     RigidBody() = default;
 
-    //Setters
-    inline void SetMass(float mass) {m_Mass = mass;}
-    inline void SetGravity(float gravity) {m_Gravity = gravity;}
-    inline void SetFriction(double Fr) {m_Friction = Fr;}
+    // Setters
+    inline void SetMass(float mass) { m_Mass = mass; }
+    inline void SetGravity(float gravity) { m_Gravity = gravity; }
+    inline void SetFriction(float Fr) { m_Friction = Fr; }
 
+    // Force
+    inline void ApplyForce(Vector F) { m_Force = F; }
+    inline void ApplyForceX(float fX) { m_Force.x = fX; }
+    inline void ApplyForceY(float fY) { m_Force.y = fY; }
+    inline void UnsetForce() { m_Force.set_zero(); }
 
-    //Force
-    inline void ApplyForce(Vector F) {m_Force = F;}
-    inline void ApplyForceX(float fX) {m_Force.x = fX;}
-    inline void ApplyForceY(float fY) {m_Force.y = fY;}
-    inline void UnsetForce() {m_Force.set_zero();}
+    // Getters
+    inline float GetMass() { return m_Mass; }
+    inline Vector Velocity() { return m_Velocity; }
+    inline Vector Acceleration() { return m_Acceleration; }
 
-    //Getters
-    inline float GetMass() {return m_Mass;}
-    inline Vector Velocity() {return m_Velocity;}
-    inline Vector Acceleration() {return m_Acceleration;}
-
-    //Update methode
-    void Update(float dt, Vector& position){
-        m_Acceleration.x = (m_Force.x * m_Friction)/m_Mass;
-        m_Acceleration.y = m_Gravity - m_Force.y/m_Mass;
-        m_Velocity = m_Acceleration*dt;
-        position += m_Velocity*dt;
+    // Update methode
+    void Update(float dt, Vector &position)
+    {
+        m_Acceleration.x = (m_Force.x * m_Friction) / m_Mass;
+        m_Acceleration.y = m_Gravity - m_Force.y / m_Mass;
+        m_Velocity = m_Acceleration * dt;
+        position += m_Velocity * dt;
     }
 
-    void UpdateX(float dt, Vector& position){
-        m_Acceleration.x = (m_Force.x * m_Friction)/m_Mass;
-        m_Velocity.x = m_Acceleration.x*dt;
-        position.x += m_Velocity.x *dt;
+    void UpdateX(float dt, Vector &position)
+    {
+        m_Acceleration.x = (m_Force.x * m_Friction) / m_Mass;
+        m_Velocity.x = m_Acceleration.x * dt;
+        position.x += m_Velocity.x * dt;
     }
 
-    void UpdateY(float dt, Vector& position){
-        m_Acceleration.y = m_Gravity - m_Force.y/m_Mass;
-        m_Velocity.y = m_Acceleration.y*dt;
-        position.y += m_Velocity.y *dt;
+    void UpdateY(float dt, Vector &position)
+    {
+        m_Acceleration.y = m_Gravity - m_Force.y / m_Mass;
+        m_Velocity.y = m_Acceleration.y * dt;
+        position.y += m_Velocity.y * dt;
     }
 
 private:
-    float m_Gravity {GRAVITY};
-    float m_Mass {UNI_MASS};
-    float m_Friction {FRICTION};
+    float m_Gravity{GRAVITY};
+    float m_Mass{UNI_MASS};
+    float m_Friction{FRICTION};
 
-	Vector m_Velocity {};
-    Vector m_Acceleration {};
-
+    Vector m_Velocity{};
+    Vector m_Acceleration{};
 };
 
 #endif //__RIGIDBODY_H__

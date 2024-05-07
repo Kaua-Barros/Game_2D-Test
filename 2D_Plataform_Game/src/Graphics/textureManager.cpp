@@ -6,14 +6,14 @@ float UNIT_TO_PIXELS = 1;
 
 bool TextureManager::Load(std::string id, std::string filename)
 {
-    SDL_Surface* surface = IMG_Load(filename.c_str());
+    SDL_Surface *surface = IMG_Load(filename.c_str());
     if (surface == nullptr)
-        {
-            SDL_Log("Failed to create surface. Error: %s", SDL_GetError());
-            SDL_FreeSurface(surface);
-            return false;
-        }
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(Engine::GetInstance()->GetRenderer(), surface);
+    {
+        SDL_Log("Failed to create surface. Error: %s", SDL_GetError());
+        SDL_FreeSurface(surface);
+        return false;
+    }
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(Engine::GetInstance()->GetRenderer(), surface);
     if (texture == nullptr)
     {
         SDL_Log("Failed to create texture from surface. Error: %s", SDL_GetError());
@@ -27,10 +27,9 @@ bool TextureManager::Load(std::string id, std::string filename)
     return true;
 }
 
-
 void TextureManager::Draw(std::string id, int x, int y, float width, float heigth, SDL_RendererFlip flip)
 {
-    //Estudar a padronização do tamanho de cada tile
+    // Estudar a padronização do tamanho de cada tile
     SDL_Rect srcRect = {0, 0, (int)(width * UNIT_TO_PIXELS), (int)(heigth * UNIT_TO_PIXELS)};
     SDL_Rect dstRect = {(int)(x * UNIT_TO_PIXELS), (int)(y * UNIT_TO_PIXELS), (int)(width * UNIT_TO_PIXELS), (int)(heigth * UNIT_TO_PIXELS)};
     SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[id], &srcRect, &dstRect, 0, nullptr, flip);
@@ -43,21 +42,19 @@ void TextureManager::DrawFrame(std::string id, int x, int y, float objectWidth, 
     SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[id], &srcRect, &dstRect, 0, nullptr, flip);
 }
 
-/*
-void TextureManager::Draw(std::string id, int x, int y, int width, int heigth, SDL_RendererFlip flip)
+void TextureManager::DrawTile(std::string tilesetID, int tileSize, int x, int y, int row, int frame, SDL_RendererFlip flip)
 {
-    SDL_Rect srcRect = {0, 0, width, heigth};
-    SDL_Rect dstRect = {x, y, width, heigth};
-    SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[id], &srcRect, &dstRect, 0, nullptr, flip);
+    //std::cout << tilesetID << " " << x << " " << y << " " << row << " " << frame << '\n';
+    if(m_TextureMap[tilesetID] != nullptr)
+    {
+        //std::cout << "true" << '\n';
+    }
+    tileSize = tileSize * UNIT_TO_PIXELS;
+    SDL_Rect srcRect = {0, 0, tileSize, tileSize};
+    SDL_Rect dstRect = {x, y, tileSize, tileSize};
+    SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[tilesetID], &srcRect, &dstRect, 0, nullptr, flip);
 }
 
-void TextureManager::DrawFrame(std::string id, int x, int y, int width, int heigth, int row, int frame, SDL_RendererFlip flip)
-{
-    SDL_Rect srcRect = {width * frame, heigth * (row - 1), width, heigth};
-    SDL_Rect dstRect = {x, y, width, heigth};
-    SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[id], &srcRect, &dstRect, 0, nullptr, flip);
-}
-*/
 void TextureManager::Drop(std::string id)
 {
     SDL_DestroyTexture(m_TextureMap[id]);
@@ -66,7 +63,7 @@ void TextureManager::Drop(std::string id)
 
 void TextureManager::CleanTexture()
 {
-    for (auto const& [_, texture] : m_TextureMap)
+    for (auto const &[_, texture] : m_TextureMap)
     {
         SDL_DestroyTexture(texture);
     }

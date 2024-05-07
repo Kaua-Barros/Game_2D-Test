@@ -7,21 +7,20 @@
 
 #include <string>
 
-class Player: public Character
+class Player : public Character
 {
 public:
-    Player(const Properties& props, std::string TextureID);
+    Player(const Properties &props, std::string TextureID);
     ~Player();
-    
+
     virtual void Draw() override;
     virtual void Update(float dt) override;
     void Moviment();
 
 private:
     std::string m_TextureID;
-    Animation* m_Animation;
-    RigidBody* m_RigidBody;
+    Animation *m_Animation;
+    RigidBody *m_RigidBody;
 };
-
 
 #endif //__PLAYER_H__
