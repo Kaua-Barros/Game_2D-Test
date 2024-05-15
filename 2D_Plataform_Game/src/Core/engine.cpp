@@ -31,17 +31,19 @@ bool Engine::Init()
         return false;
     }
 
+    
     if (!MapParser::GetInstance()->Load())
     {
         std::cout << "Failed to Load Map" << '\n';
     }
+
 
     m_LevelMap = MapParser::GetInstance()->GetMap("MAP");
 
     TextureManager::GetInstance()->Load("player_run", "../assets/Player/Luffy_Run.png");
     TextureManager::GetInstance()->Load("player_StandBy", "../assets/Player/Luffy_StandBy.png");
 
-    player = new Player(Properties(0, 0, 76, 96), "player_StandBy");
+    player = new Player(Properties(0, 0, 2, 3), "player_StandBy");
 
     return m_isRunning = true;
 }

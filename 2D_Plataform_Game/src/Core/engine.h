@@ -24,7 +24,8 @@ public:
     void Render();
     void Events();
 
-    inline bool isRunning() { return m_isRunning; }
+    inline GameMap* GetMap() {return m_LevelMap;}
+    inline bool isRunning() {return m_isRunning;}
     inline SDL_Renderer *GetRenderer() { return m_Renderer; }
 
 private:

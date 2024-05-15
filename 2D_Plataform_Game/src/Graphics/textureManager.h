@@ -17,9 +17,9 @@ public:
     bool Load(std::string id, std::string filename);
     void Drop(std::string id);
 
-    void Draw(std::string id, int x, int y, float width, float heigth, SDL_RendererFlip flip = SDL_FLIP_NONE);
+    void Draw(std::string id, int x, int y, float width, float height, SDL_RendererFlip flip = SDL_FLIP_NONE);
     void DrawTile(std::string tilesetID, int tileSize, int x, int y, int row, int frame, SDL_RendererFlip flip = SDL_FLIP_NONE);
-    void DrawFrame(std::string id, int x, int y, float objectWidth, float objectHeigth, float spriteWidth, float spriteHeigth, int row, int frame, SDL_RendererFlip flip = SDL_FLIP_NONE);
+    void DrawFrame(std::string id, int x, int y, float objectWidth, float objectHeight, float spriteWidth, float spriteHeight, int row, int frame, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
     void CleanTexture();
 

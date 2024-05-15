@@ -32,21 +32,21 @@ class GameObject : public IObject
 {
 public:
     Vector getPosition() const { return m_Position; }
+    Vector getSize() const { return m_Size; }
 
     virtual ~GameObject() override = default;
     GameObject(const Properties &props)
-        : m_Width(props.Width),
-          m_Height(props.Heigth),
-          m_Flip(props.Flip)
+        : m_Flip(props.Flip)
     {
+        m_Size.x = props.Width;
+        m_Size.y = props.Heigth;
         m_Position.x = props.X;
         m_Position.y = props.Y;
     }
 
 protected:
     Vector m_Position;
-
-    float m_Width, m_Height;
+    Vector m_Size;
     SDL_RendererFlip m_Flip;
 };
 

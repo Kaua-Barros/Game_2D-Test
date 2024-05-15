@@ -1,8 +1,9 @@
 #include "TextureManager.h"
 #include "../Core/Engine.h"
+#include "../Global/GlobalProperties.h"
+
 
 TextureManager *TextureManager::s_Instance = nullptr;
-float UNIT_TO_PIXELS = 1;
 
 bool TextureManager::Load(std::string id, std::string filename)
 {
@@ -27,31 +28,27 @@ bool TextureManager::Load(std::string id, std::string filename)
     return true;
 }
 
-void TextureManager::Draw(std::string id, int x, int y, float width, float heigth, SDL_RendererFlip flip)
+void TextureManager::Draw(std::string id, int x, int y, float width, float height, SDL_RendererFlip flip)
 {
-    // Estudar a padronização do tamanho de cada tile
-    SDL_Rect srcRect = {0, 0, (int)(width * UNIT_TO_PIXELS), (int)(heigth * UNIT_TO_PIXELS)};
-    SDL_Rect dstRect = {(int)(x * UNIT_TO_PIXELS), (int)(y * UNIT_TO_PIXELS), (int)(width * UNIT_TO_PIXELS), (int)(heigth * UNIT_TO_PIXELS)};
+    int reSize = (UNIT_TO_PIXELS / DEFAULT_UNIT_TO_PIXELS); 
+    SDL_Rect srcRect = {0, 0, (int)(width * UNIT_TO_PIXELS), (int)(height * UNIT_TO_PIXELS)};
+    SDL_Rect dstRect = {(int)(x * reSize), (int)(y * reSize), (int)(width * UNIT_TO_PIXELS), (int)(height * UNIT_TO_PIXELS)};
     SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[id], &srcRect, &dstRect, 0, nullptr, flip);
 }
 
-void TextureManager::DrawFrame(std::string id, int x, int y, float objectWidth, float objectHeigth, float spriteWidth, float spriteHeigth, int row, int frame, SDL_RendererFlip flip)
+void TextureManager::DrawFrame(std::string id, int x, int y, float objectWidth, float objectHeight, float spriteWidth, float spriteHeight, int row, int frame, SDL_RendererFlip flip)
 {
-    SDL_Rect srcRect = {(int)((spriteWidth * frame) * UNIT_TO_PIXELS), (int)((spriteHeigth * (row - 1)) * UNIT_TO_PIXELS), (int)(spriteWidth * UNIT_TO_PIXELS), (int)(spriteHeigth * UNIT_TO_PIXELS)};
-    SDL_Rect dstRect = {(int)(x * UNIT_TO_PIXELS), (int)(y * UNIT_TO_PIXELS), (int)(objectWidth * UNIT_TO_PIXELS), (int)(objectHeigth * UNIT_TO_PIXELS)};
+    int reSize = (UNIT_TO_PIXELS / DEFAULT_UNIT_TO_PIXELS); 
+    SDL_Rect srcRect = {(int)((spriteWidth * frame)), (int)((spriteHeight * (row - 1))), (int)(spriteWidth), (int)(spriteHeight)};
+    SDL_Rect dstRect = {(int)(x * reSize), (int)(y * reSize), (int)(objectWidth * UNIT_TO_PIXELS), (int)(objectHeight * UNIT_TO_PIXELS)};
     SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[id], &srcRect, &dstRect, 0, nullptr, flip);
 }
 
 void TextureManager::DrawTile(std::string tilesetID, int tileSize, int x, int y, int row, int frame, SDL_RendererFlip flip)
 {
-    //std::cout << tilesetID << " " << x << " " << y << " " << row << " " << frame << '\n';
-    if(m_TextureMap[tilesetID] != nullptr)
-    {
-        //std::cout << "true" << '\n';
-    }
-    tileSize = tileSize * UNIT_TO_PIXELS;
+    int reSize = (UNIT_TO_PIXELS / DEFAULT_UNIT_TO_PIXELS); 
     SDL_Rect srcRect = {0, 0, tileSize, tileSize};
-    SDL_Rect dstRect = {x, y, tileSize, tileSize};
+    SDL_Rect dstRect = {x * reSize, y * reSize, tileSize * reSize, tileSize * reSize};
     SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[tilesetID], &srcRect, &dstRect, 0, nullptr, flip);
 }
 

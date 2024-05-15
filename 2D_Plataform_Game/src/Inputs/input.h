@@ -12,6 +12,7 @@ public:
     }
     void Listen();
     bool GetKeyDown(SDL_Scancode key);
+    bool GetKeyUp(SDL_Scancode key);
 
 private:
     Input();
