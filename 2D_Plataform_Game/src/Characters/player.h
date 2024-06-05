@@ -4,18 +4,18 @@
 #include "Character.h"
 #include "..\Graphics\TextureManager.h"
 #include "..\Physics\collisionHandler.h"
+#include "..\Physics\collider.h"
 #include "..\Inputs\Input.h"
-#include "..\Core\Engine.h"
 #include "..\Animations\Animation.h"
 #include "..\Physics\RigidBody.h"
-#include "..\Physics\Collider.h"
+#include "..\Core\Engine.h"
 #include "my-lib\math-vector.h"
 #include <SDL.h>
 
 using Vector = Mylib::Math::Vector<float, 2>;
 using Box = Mylib::Math::Vector<float, 4>;
 
-inline constexpr float JUMP_TIME = 20.0f;
+inline constexpr float JUMP_TIME = 10.0f;
 inline constexpr float JUMP_FORCE = 9.8f;
 
 #include <string>
@@ -23,7 +23,7 @@ inline constexpr float JUMP_FORCE = 9.8f;
 class Player : public Character
 {
 public:
-    Player(const Properties &props, std::string TextureID);
+    Player(const Properties& props);
     ~Player();
 
     virtual void Draw() override;
@@ -37,11 +37,16 @@ private:
     float m_JumpTime;
     float m_JumpForce;
 
-    std::string m_TextureID;
+    textureID m_TextureID;
     
-    Collider* m_Collider;
-    Animation* m_Animation;
-    RigidBody* m_RigidBody;
+    Collider m_Collider;
+
+    Animation m_Animation_Run;
+    Animation m_Animation_Jump;
+    Animation m_Animation_StandBy;
+    Animation m_Animation;
+
+    RigidBody m_RigidBody;
     
     Vector m_LastSafePosition;
 };

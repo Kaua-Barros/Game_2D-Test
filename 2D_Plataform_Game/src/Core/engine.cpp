@@ -17,7 +17,7 @@ bool Engine::Init()
         return false;
     }
 
-    m_Window = SDL_CreateWindow("2D Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEEN_WIDTH, SCREEN_HEIGHT, 0);
+    m_Window = SDL_CreateWindow("2D Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     if (m_Window == nullptr)
     {
         SDL_Log("Failed to create window. Error: %s", SDL_GetError());
@@ -40,10 +40,7 @@ bool Engine::Init()
 
     m_LevelMap = MapParser::GetInstance()->GetMap("MAP");
 
-    TextureManager::GetInstance()->Load("player_run", "../assets/Player/Luffy_Run.png");
-    TextureManager::GetInstance()->Load("player_StandBy", "../assets/Player/Luffy_StandBy.png");
-
-    player = new Player(Properties(0, 0, 2, 3), "player_StandBy");
+    player = new Player(Properties{.Width = 2, .Heigth = 3, .X = 0, .Y = 0});
 
     return m_isRunning = true;
 }

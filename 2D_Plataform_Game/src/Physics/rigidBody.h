@@ -35,35 +35,50 @@ public:
     inline float GetMass() { return m_Mass; }
     inline float GetGravity() { return m_Gravity; }
     inline Vector Velocity() { return m_Velocity; }
-    inline Vector& Acceleration() { return m_Acceleration; }
+    inline Vector Force() { return m_Force; }
 
     // Update methode
     void Update(float dt, Vector &position)
     {
+        if (dt > 3)
+        {
+            dt = 1;
+        }
         m_Acceleration.x = (m_Force.x * m_Friction) / m_Mass;
         m_Acceleration.y = m_Gravity - m_Force.y / m_Mass;
         m_Velocity = m_Acceleration * dt;
-        position += m_Velocity * dt;
+        position += (m_Velocity * dt) * (UNIT_TO_PIXELS/32);
         m_Force = m_Velocity;
     }
 
     void UpdateX(float dt, Vector &position)
     {
+        if (dt > 3)
+        {
+            dt = 1;
+        }
         m_Acceleration.x = (m_Force.x * m_Friction) / m_Mass;
         m_Velocity.x = m_Acceleration.x * dt;
-        position.x += m_Velocity.x * dt;
-        m_Force.x = m_Velocity.x ;
+        position.x += (m_Velocity.x * dt) * (UNIT_TO_PIXELS/32);
+        m_Force.x = m_Velocity.x;
     }
 
     void UpdateY(float dt, Vector &position)
     {
+        if (dt > 3)
+        {
+            dt = 1;
+        }
         m_Acceleration.y = m_Force.y + (m_Gravity * m_Mass);
         m_Velocity.y = m_Acceleration.y * dt;
-        position.y += m_Velocity.y * dt;
-        if(m_Force.y < 0){
+        position.y += (m_Velocity.y * dt) * (UNIT_TO_PIXELS/32);
+        if (m_Force.y < 0)
+        {
             m_Force.y = m_Acceleration.y;
-        } else {
-             m_Force.y = 0;
+        }
+        else
+        {
+            m_Force.y = 0;
         }
     }
 

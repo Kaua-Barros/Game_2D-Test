@@ -1,13 +1,13 @@
-#ifndef __CHARACTER_H__
+#ifndef __CHARACTER_H__ 
 #define __CHARACTER_H__
 
-#include "..\Object\GameObject.h"
+#include "..\Object\RectObject.h"
 #include <string>
 
-class Character : public GameObject
+class Character : public RectObject
 {
 public:
-    Character(const Properties &props) : GameObject(props) {}
+    Character(const Properties& props): RectObject(props) {}
 
 protected:
     std::string m_Name;

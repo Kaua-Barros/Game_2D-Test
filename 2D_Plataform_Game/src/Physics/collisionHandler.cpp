@@ -7,26 +7,34 @@ CollisionHandler *CollisionHandler::s_Instance = nullptr;
 CollisionHandler::CollisionHandler()
 {
     auto layers = Engine::GetInstance()->GetMap()->GetLayers();
-    if (!layers.empty()) {
+    if (!layers.empty())
+    {
         m_CollisonLayer = (TileLayer *)layers.back();
-    } else {
+    }
+    else
+    {
         m_CollisonLayer = nullptr;
     }
-    m_CollisonTileMap = m_CollisonLayer->GetTileMap();
+    if (m_CollisonLayer != nullptr)
+    {
+        m_CollisonTileMap = m_CollisonLayer->GetTileMap();
+    }
+    else
+    {
+        m_CollisonTileMap = {};
+    }
 }
 
-bool CollisionHandler::CheckCollision(Box object1, Box object2)
-{
-    bool x_overlaps = (object1.x < object2.x + object2.w) && (object1.x + object1.w > object2.x);
-    bool y_overlaps = (object1.y < object2.y + object2.z) && (object1.y + object1.z > object2.y);
-    return (x_overlaps && y_overlaps);
-}
+#include <set>
+
+// Adicione a lista de IDs de tiles intangíveis
+std::set<int> intangibleTileIDs = {1};
 
 bool CollisionHandler::MapCollision(Box box)
 {
-    int tileSize = 1 * DEFAULT_UNIT_TO_PIXELS;
-    int RowCount = 20;
-    int ColCount = 60;
+    int tileSize = 1 * UNIT_TO_PIXELS;
+    int RowCount = m_CollisonLayer->GetRowCount();
+    int ColCount = m_CollisonLayer->GetColCount();
 
     int left_tile = box.x / tileSize;
     int right_tile = (box.x + box.w) / tileSize;
@@ -42,6 +50,7 @@ bool CollisionHandler::MapCollision(Box box)
     {
         right_tile = ColCount;
     }
+
     if (top_tile < 0)
     {
         top_tile = 0;
@@ -55,7 +64,8 @@ bool CollisionHandler::MapCollision(Box box)
     {
         for (int j = top_tile; j <= bottom_tile; ++j)
         {
-            if (m_CollisonTileMap[j][i] > 0)
+            int tileID = m_CollisonTileMap[j][i];
+            if (tileID > 0 && intangibleTileIDs.find(tileID) == intangibleTileIDs.end())
             {
                 return true;
             }
@@ -64,6 +74,61 @@ bool CollisionHandler::MapCollision(Box box)
     return false;
 }
 
-void CollisionHandler::ApplyCollisionForce(Vector &positionObject1, Vector sizeObject1, RigidBody *rigidBody, Vector positionObject2, Vector sizeObject2)
+
+void CollisionHandler::ApplyCollisionForce(Box box, RigidBody &rigidBody, bool &isGrounded)
 {
+    // Convertendo as dimensões para pixel
+
+    Box rightBox;
+    rightBox.x = box.x + box.w + (box.w / 12 - box.w / 2);
+    rightBox.y = box.y + box.z / 10;
+    rightBox.w = box.w / 2;
+    rightBox.z = box.z - (2 * box.z / 10);
+
+    Box leftBox;
+    leftBox.x = box.x - box.w / 12;
+    leftBox.y = box.y + box.z / 10;
+    leftBox.w = box.w / 2;
+    leftBox.z = box.z - (2 * box.z / 10);
+
+    Box belowBox;
+    belowBox.x = box.x;
+    belowBox.y = box.y + box.z/2;
+    belowBox.w = box.w;
+    belowBox.z = box.z / 2;
+
+    Box upwardBox;
+    upwardBox.x = box.x;
+    upwardBox.y = box.y;
+    upwardBox.w = box.w;
+    upwardBox.z = box.z / 2;
+
+    // Verifica a colisão no eixo y
+    float force;
+    if (MapCollision(belowBox))
+    {
+        std::cout << "baixo?" << '\n';
+        std::cout << rigidBody.Force().y << '\n';
+        isGrounded = true;
+        rigidBody.ApplyForceY(rigidBody.Force().y * -1 - (rigidBody.GetGravity() * rigidBody.GetMass())); // Aplica força para cima
+    }
+    else if (MapCollision(upwardBox))
+    {
+        std::cout << "cima?" << '\n';
+        std::cout << rigidBody.Force().y << '\n';
+        isGrounded = false;
+        rigidBody.ApplyForceY(rigidBody.Force().y * -1 + (rigidBody.GetGravity() * rigidBody.GetMass())); // Aplica força para cima
+    }
+    if (MapCollision(rightBox))
+    {
+        std::cout << "Direita?" << '\n';
+        std::cout << rigidBody.Force().x << '\n';
+        rigidBody.ApplyForceX(-std::abs(rigidBody.Force().x + 5)); // Aplica força para a esquerda
+    }
+    else if (MapCollision(leftBox))
+    {
+        std::cout << "Esquerda?" << '\n';
+        std::cout << rigidBody.Force().x << '\n';
+        rigidBody.ApplyForceX(std::abs(rigidBody.Force().x) + 5); // Aplica força para a direita
+    }
 }

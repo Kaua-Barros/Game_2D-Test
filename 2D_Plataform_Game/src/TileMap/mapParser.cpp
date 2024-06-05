@@ -48,7 +48,6 @@ bool MapParser::Parse(std::string id, std::string source)
             tilesets.push_back(ParseTileset(e));
         }
     }
-    std::cout << tilesets.size() << '\n';
 
     GameMap* gamemap = new GameMap();
 
@@ -68,7 +67,7 @@ bool MapParser::Parse(std::string id, std::string source)
 Tileset MapParser::ParseTileset(tinyxml2::XMLElement *xmlTileset)
 {
     Tileset tileset;
-    tileset.Name = xmlTileset->Attribute("name");
+    // tileset.Name = xmlTileset->Attribute("name");
     tileset.FirstID = xmlTileset->IntAttribute("firstgid", tileset.FirstID);
 
     tileset.TileCount = xmlTileset->IntAttribute("tilecount", tileset.TileCount);
@@ -98,7 +97,7 @@ TileLayer *MapParser::ParseTileLayer(tinyxml2::XMLElement *xmlLayer, TilesetList
     std::string matrix(data->GetText());
     std::istringstream iss(matrix);
     std::string id;
-    std::cout << rowcount << " " << colcount << " " << tilesize << '\n';
+
     TileMap tilemap(rowcount, std::vector<int> (colcount, 0));
     for (int row = 0; row < rowcount; row++)
     {

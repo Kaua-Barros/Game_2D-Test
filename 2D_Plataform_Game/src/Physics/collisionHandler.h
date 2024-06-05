@@ -15,7 +15,7 @@ public:
     bool CheckCollision(Box object1, Box object2);
     bool MapCollision(Box box);
 
-    void ApplyCollisionForce(Vector &positionObject1, Vector sizeObject1, RigidBody *rigidBody, Vector positionObject2, Vector sizeObject2);
+    void ApplyCollisionForce(Box box, RigidBody &rigidBody, bool &isGrounded);
     inline static CollisionHandler *GetInstance() { return s_Instance = (s_Instance != nullptr) ? s_Instance : new CollisionHandler(); }
 
 private:

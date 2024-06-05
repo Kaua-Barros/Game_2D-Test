@@ -1,17 +1,18 @@
 #include "Player.h"
 
-Player::Player(const Properties &props, std::string TextureID) : Character(props)
+Player::Player(const Properties &props) : Character(props)
 {
     m_JumpTime = JUMP_TIME;
     m_JumpForce = JUMP_FORCE;
+    
+    m_Collider.SetBuffer(0, 0, 0, 0);
 
-    m_Collider = new Collider();
-    m_Collider->SetBuffer(0, 0, 0, 0);
-
-    m_TextureID = TextureID;
-    m_Animation = new Animation();
-    m_RigidBody = new RigidBody();
-    m_RigidBody->SetFriction(0.8f);
+    m_TextureID = TextureManager::GetInstance()->Load("../assets/Player/Game Boy Advance - One Piece - Monkey D Luffy.png");
+    m_Animation_Run.SetProps(TextureManager::GetInstance()->Load("../assets/Player/Luffy_Run.png"), 1, 6, 200, 38, 48);
+    m_Animation_Jump.SetProps(m_TextureID, 3, 11, 300, 35, 58);
+    m_Animation_StandBy.SetProps(TextureManager::GetInstance()->Load("../assets/Player/Luffy_StandBy.png"), 1, 7, 400, 38, 48);
+    
+    m_RigidBody.SetFriction(0.8f);
 }
 
 Player::~Player()
@@ -21,9 +22,9 @@ Player::~Player()
 
 void Player::Draw()
 {
-    m_Animation->Draw(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
+    m_Animation.Draw(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
 
-    Box box = m_Collider->Get();
+    Box box = m_Collider.Get();
     SDL_Rect SDL_Box {(int)box.x, (int)box.y, (int)box.w, (int)box.z};
     SDL_RenderDrawRect(Engine::GetInstance()->GetRenderer(), &SDL_Box);
 }
@@ -32,42 +33,41 @@ void Player::Update(float dt)
 {    
     Player::Moviment(dt);
 
-    m_LastSafePosition.x = m_Position.x;
-    m_RigidBody->UpdateX(dt, m_Position);
-    m_Collider->Set(m_Position.x, m_Position.y, (m_Size.x * DEFAULT_UNIT_TO_PIXELS) - 10, (m_Size.y * DEFAULT_UNIT_TO_PIXELS));
-
-    if(CollisionHandler::GetInstance()->MapCollision(m_Collider->Get())){
-        m_Position.x = m_LastSafePosition.x;
-    }
-
-    m_LastSafePosition.y = m_Position.y;
-    m_RigidBody->UpdateY(dt, m_Position);
-    m_Collider->Set(m_Position.x, m_Position.y, (m_Size.x * DEFAULT_UNIT_TO_PIXELS) - 10, (m_Size.y * DEFAULT_UNIT_TO_PIXELS));
-
-    if(CollisionHandler::GetInstance()->MapCollision(m_Collider->Get())){
-        m_IsGrounded = true;
-        m_Position.y = m_LastSafePosition.y;
+    m_RigidBody.UpdateX(dt, m_Position);
+    m_RigidBody.UpdateY(dt, m_Position);
+    m_Collider.Set(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
+    if(CollisionHandler::GetInstance()->MapCollision(m_Collider.Get())){
+        CollisionHandler::GetInstance()->ApplyCollisionForce(m_Collider.Get(), m_RigidBody, m_IsGrounded);
     }
     else
     {
         m_IsGrounded = false;
     }
 
-    m_Animation->Update();
+    m_Animation.Update();
 }
 
 void Player::Moviment(float dt)
 {
-    m_Animation->SetProps("player_StandBy", 1, 7, 400, 38, 48, SDL_FLIP_HORIZONTAL);
+    if(m_IsGrounded){
+        m_Animation_StandBy.setFlip(SDL_FLIP_HORIZONTAL);
+        m_Animation = m_Animation_StandBy;
+    } else {
+        m_Animation_Jump.setFlip(SDL_FLIP_NONE);
+        //m_Animation = m_Animation_Jump;
+        m_Animation = m_Animation_StandBy;
+    }
     if (Input::GetInstance()->GetKeyDown(SDL_SCANCODE_A))
     {
-        m_RigidBody->ApplyForceX(2 * BACKWARD);
-        m_Animation->SetProps("player_run", 1, 6, 200, 38, 48, SDL_FLIP_NONE);
+        m_RigidBody.ApplyForceX(2 * BACKWARD);
+        m_Animation_Run.setFlip(SDL_FLIP_NONE);
+        m_Animation = m_Animation_Run;
     }
     if (Input::GetInstance()->GetKeyDown(SDL_SCANCODE_D))
     {
-        m_RigidBody->ApplyForceX(2 * FORWARD);
-        m_Animation->SetProps("player_run", 1, 6, 200, 38, 48, SDL_FLIP_HORIZONTAL);
+        m_RigidBody.ApplyForceX(2 * FORWARD);
+        m_Animation_Run.setFlip(SDL_FLIP_HORIZONTAL);
+        m_Animation = m_Animation_Run;
     }
     if (Input::GetInstance()->GetKeyDown(SDL_SCANCODE_S))
     {
@@ -76,12 +76,12 @@ void Player::Moviment(float dt)
     {
         m_IsJumping = true;
         m_IsGrounded = false;
-        m_RigidBody->ApplyForceY(JUMP_FORCE * UPWARD);
+        m_RigidBody.ApplyForceY(JUMP_FORCE * UPWARD);
     }
         if (Input::GetInstance()->GetKeyDown(SDL_SCANCODE_W) && m_IsJumping && m_JumpTime > 0)
     {
         m_JumpTime -= dt;
-        m_RigidBody->ApplyForceY(JUMP_FORCE * UPWARD);
+        m_RigidBody.ApplyForceY(JUMP_FORCE * UPWARD);
     }
     else
     {
@@ -90,6 +90,7 @@ void Player::Moviment(float dt)
     }
     if (Input::GetInstance()->GetKeyDown(SDL_SCANCODE_A) && Input::GetInstance()->GetKeyDown(SDL_SCANCODE_D))
     {
-        m_Animation->SetProps("player_StandBy", 1, 7, 400, 38, 48, SDL_FLIP_HORIZONTAL);
+        m_Animation_StandBy.setFlip(SDL_FLIP_HORIZONTAL);
+        m_Animation = m_Animation_StandBy;
     }
 }

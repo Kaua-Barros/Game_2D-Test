@@ -2,69 +2,63 @@
 #include "../Core/Engine.h"
 #include "../Global/GlobalProperties.h"
 
-
 TextureManager *TextureManager::s_Instance = nullptr;
 
-bool TextureManager::Load(std::string id, std::string filename)
+textureID TextureManager::Load(std::string filename)
 {
     SDL_Surface *surface = IMG_Load(filename.c_str());
     if (surface == nullptr)
     {
         SDL_Log("Failed to create surface. Error: %s", SDL_GetError());
         SDL_FreeSurface(surface);
-        return false;
+        // return false; implementar: error thrw
     }
+
     SDL_Texture *texture = SDL_CreateTextureFromSurface(Engine::GetInstance()->GetRenderer(), surface);
     if (texture == nullptr)
     {
         SDL_Log("Failed to create texture from surface. Error: %s", SDL_GetError());
         SDL_FreeSurface(surface);
-        return false;
+        // return false; implementar: error thrw
     }
 
-    m_TextureMap[id] = texture;
-
+    textureID ID = {.it = m_TextureList.insert(m_TextureList.end(), texture)};
     SDL_FreeSurface(surface);
-    return true;
+    return ID;
 }
 
-void TextureManager::Draw(std::string id, int x, int y, float width, float height, SDL_RendererFlip flip)
+void TextureManager::Draw(textureID id, int x, int y, float width, float height, SDL_RendererFlip flip)
 {
-    int reSize = (UNIT_TO_PIXELS / DEFAULT_UNIT_TO_PIXELS); 
     SDL_Rect srcRect = {0, 0, (int)(width * UNIT_TO_PIXELS), (int)(height * UNIT_TO_PIXELS)};
-    SDL_Rect dstRect = {(int)(x * reSize), (int)(y * reSize), (int)(width * UNIT_TO_PIXELS), (int)(height * UNIT_TO_PIXELS)};
-    SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[id], &srcRect, &dstRect, 0, nullptr, flip);
+    SDL_Rect dstRect = {(int)(x), (int)(y), (int)(width * UNIT_TO_PIXELS), (int)(height * UNIT_TO_PIXELS)};
+    SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), *id.it, &srcRect, &dstRect, 0, nullptr, flip);
 }
 
-void TextureManager::DrawFrame(std::string id, int x, int y, float objectWidth, float objectHeight, float spriteWidth, float spriteHeight, int row, int frame, SDL_RendererFlip flip)
+void TextureManager::DrawFrame(textureID id, int x, int y, float objectWidth, float objectHeight, float spriteWidth, float spriteHeight, int row, int frame, SDL_RendererFlip flip)
 {
-    int reSize = (UNIT_TO_PIXELS / DEFAULT_UNIT_TO_PIXELS); 
     SDL_Rect srcRect = {(int)((spriteWidth * frame)), (int)((spriteHeight * (row - 1))), (int)(spriteWidth), (int)(spriteHeight)};
-    SDL_Rect dstRect = {(int)(x * reSize), (int)(y * reSize), (int)(objectWidth * UNIT_TO_PIXELS), (int)(objectHeight * UNIT_TO_PIXELS)};
-    SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[id], &srcRect, &dstRect, 0, nullptr, flip);
+    SDL_Rect dstRect = {(int)(x), (int)(y), (int)(objectWidth * UNIT_TO_PIXELS), (int)(objectHeight * UNIT_TO_PIXELS)};
+    SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), *id.it, &srcRect, &dstRect, 0, nullptr, flip);
 }
 
-void TextureManager::DrawTile(std::string tilesetID, int tileSize, int x, int y, int row, int frame, SDL_RendererFlip flip)
+void TextureManager::DrawTile(textureID tilesetID, int tileSize, int x, int y, int row, int frame, SDL_RendererFlip flip)
 {
-    int reSize = (UNIT_TO_PIXELS / DEFAULT_UNIT_TO_PIXELS); 
-    SDL_Rect srcRect = {0, 0, tileSize, tileSize};
+    int reSize = (UNIT_TO_PIXELS / tileSize);
+    SDL_Rect srcRect = {tileSize * frame, tileSize * row, tileSize, tileSize};
     SDL_Rect dstRect = {x * reSize, y * reSize, tileSize * reSize, tileSize * reSize};
-    SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[tilesetID], &srcRect, &dstRect, 0, nullptr, flip);
+    SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), *tilesetID.it, &srcRect, &dstRect, 0, nullptr, flip);
 }
 
-void TextureManager::Drop(std::string id)
+void TextureManager::Drop(textureID id)
 {
-    SDL_DestroyTexture(m_TextureMap[id]);
-    m_TextureMap.erase(id);
+    SDL_DestroyTexture(*id.it);
+    m_TextureList.erase(id.it);
 }
 
 void TextureManager::CleanTexture()
 {
-    for (auto const &[_, texture] : m_TextureMap)
-    {
+    for (auto& texture : m_TextureList) {
         SDL_DestroyTexture(texture);
     }
-
-    m_TextureMap.clear();
-    SDL_Log("Texture map cleaned");
+    m_TextureList.clear();
 }

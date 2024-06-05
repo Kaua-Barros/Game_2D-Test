@@ -10,44 +10,14 @@
 
 using Vector = Mylib::Math::Vector<float, 2>;
 
-struct Properties
-{
-public:
-    Properties(float x, float y, float width, float height, SDL_RendererFlip flip = SDL_FLIP_NONE)
-    {
-        X = x;
-        Y = y;
-        Flip = flip;
-        Width = width;
-        Heigth = height;
-    }
-
-public:
-    float Width, Heigth;
-    float X, Y;
-    SDL_RendererFlip Flip;
-};
-
 class GameObject : public IObject
 {
 public:
     Vector getPosition() const { return m_Position; }
-    Vector getSize() const { return m_Size; }
-
     virtual ~GameObject() override = default;
-    GameObject(const Properties &props)
-        : m_Flip(props.Flip)
-    {
-        m_Size.x = props.Width;
-        m_Size.y = props.Heigth;
-        m_Position.x = props.X;
-        m_Position.y = props.Y;
-    }
 
 protected:
     Vector m_Position;
-    Vector m_Size;
-    SDL_RendererFlip m_Flip;
 };
 
 #endif // __GAME_OBJECT_H__
