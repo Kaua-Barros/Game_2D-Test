@@ -4,6 +4,7 @@
 #include "..\Timer\timer.h"
 #include "..\Characters\Player.h"
 #include "..\TileMap\MapParser.h"
+#include "..\Camera\Camera.h"
 #include <iostream>
 
 Engine *Engine::s_Instance = nullptr;
@@ -17,7 +18,7 @@ bool Engine::Init()
         return false;
     }
 
-    m_Window = SDL_CreateWindow("2D Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+    m_Window = SDL_CreateWindow("2D Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     if (m_Window == nullptr)
     {
         SDL_Log("Failed to create window. Error: %s", SDL_GetError());
@@ -31,16 +32,18 @@ bool Engine::Init()
         return false;
     }
 
-    
-    if (!MapParser::GetInstance()->Load())
+    if (!MapParser::GetInstance()->Load("C:/msys64/home/Kaua/SDLtemplate/2D_Plataform_Game/assets/Map/file.tmx"))
     {
         std::cout << "Failed to Load Map" << '\n';
     }
 
-
-    m_LevelMap = MapParser::GetInstance()->GetMap("MAP");
+    m_LevelMap = MapParser::GetInstance()->GetMap("MAP", 0, 0);
 
     player = new Player(Properties{.Width = 2, .Heigth = 3, .X = 0, .Y = 0});
+
+    Camera::GetInstance()->SetTarget(player->GetOrigin());
+    Camera::GetInstance()->SetLimitPosition(m_LevelMap->GetMapPosition());
+    Camera::GetInstance()->SetLimitDimension(m_LevelMap->GetMapDimension());
 
     return m_isRunning = true;
 }
@@ -50,6 +53,7 @@ void Engine::Update()
     float dt = Timer::GetInstance()->GetDeltaTime();
     m_LevelMap->Update();
     player->Update(dt);
+    Camera::GetInstance()->Update();
 }
 
 void Engine::Render()

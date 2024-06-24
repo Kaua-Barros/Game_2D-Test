@@ -10,10 +10,12 @@
 class MapParser
 {
 public:
-    bool Load();
+    bool Load(const std::string &tmxFilePath);
     void Clean();
 
-    inline GameMap *GetMap(std::string id) { return m_MapDict[id]; }
+    inline GameMap *GetMap(std::string id, float x = 0, float y = 0)
+    { m_MapDict[id]->SetMapPosition(x, y); return m_MapDict[id]; }
+
     inline static MapParser *GetInstance() { return s_Instance = (s_Instance != nullptr) ? s_Instance : new MapParser(); }
 
 private:

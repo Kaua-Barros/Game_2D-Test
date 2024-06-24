@@ -22,20 +22,24 @@ Player::~Player()
 
 void Player::Draw()
 {
-    SDL_Rect Rect{(int)m_Position.x, (int)m_Position.y, (int)(m_Size.x * UNIT_TO_PIXELS), (int)(m_Size.y * UNIT_TO_PIXELS)};
-    SDL_RenderDrawRect(Engine::GetInstance()->GetRenderer(), &Rect);
+    SDL_Rect Rect{(int)m_Position.x, (int)m_Position.y, (int)(m_Size.x * DEFAULT_UNIT_TO_PIXELS * SCALE_WIDTH), (int)(m_Size.y * DEFAULT_UNIT_TO_PIXELS * SCALE_WIDTH)};
+    // SDL_RenderDrawRect(Engine::GetInstance()->GetRenderer(), &Rect);
     m_Animation.Draw(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
 }
 
 void Player::Update(float dt)
 {
     Player::Moviment(dt);
+    m_Origin->x = m_Position.x + (m_Size.x / 2) * DEFAULT_UNIT_TO_PIXELS * SCALE_WIDTH;
+    m_Origin->y = m_Position.y + (m_Size.y / 2) * DEFAULT_UNIT_TO_PIXELS * SCALE_HEIGHT;
 
     m_RigidBody.UpdateX(dt, m_Position);
+
     m_RigidBody.UpdateY(dt, m_Position);
     m_Collider.Set(m_Position.x, m_Position.y, m_Size.x, m_Size.y);
-    std::cout << dt << '\n';
     m_IsGrounded = CollisionHandler::GetInstance()->MapCollision(m_Collider.Get(), m_Position);
+
+
     m_Animation.Update();
 }
 
@@ -49,18 +53,17 @@ void Player::Moviment(float dt)
     else
     {
         m_Animation_Jump.setFlip(SDL_FLIP_NONE);
-        // m_Animation = m_Animation_Jump;
         m_Animation = m_Animation_StandBy;
     }
     if (Input::GetInstance()->GetKeyDown(SDL_SCANCODE_A))
     {
-        m_RigidBody.ApplyVelocityX(1.5f * BACKWARD);
+        m_RigidBody.ApplyVelocityX(1.5f * SCALE_WIDTH * BACKWARD);
         m_Animation_Run.setFlip(SDL_FLIP_NONE);
         m_Animation = m_Animation_Run;
     }
     if (Input::GetInstance()->GetKeyDown(SDL_SCANCODE_D))
     {
-        m_RigidBody.ApplyVelocityX(1.5f * FORWARD);
+        m_RigidBody.ApplyVelocityX(1.5f * SCALE_WIDTH * FORWARD);
         m_Animation_Run.setFlip(SDL_FLIP_HORIZONTAL);
         m_Animation = m_Animation_Run;
     }
@@ -71,12 +74,12 @@ void Player::Moviment(float dt)
     {
         m_IsJumping = true;
         m_IsGrounded = false;
-        m_RigidBody.ApplyVelocityY(JUMP_FORCE * UPWARD);
+        m_RigidBody.ApplyVelocityY(JUMP_FORCE * SCALE_HEIGHT * UPWARD);
     }
     if (Input::GetInstance()->GetKeyDown(SDL_SCANCODE_W) && m_IsJumping && m_JumpTime > 0)
     {
         m_JumpTime -= dt;
-        m_RigidBody.ApplyVelocityY(JUMP_FORCE * UPWARD);
+        m_RigidBody.ApplyVelocityY(JUMP_FORCE * SCALE_HEIGHT * UPWARD);
     }
     else
     {

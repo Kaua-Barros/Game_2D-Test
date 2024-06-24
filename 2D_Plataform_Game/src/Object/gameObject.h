@@ -4,7 +4,7 @@
 #pragma once
 
 #include "IObject.h"
-
+#include "..\Global\globalProperties.h"
 #include <SDL.h>
 #include <my-lib/math-vector.h>
 
@@ -14,9 +14,11 @@ class GameObject : public IObject
 {
 public:
     Vector getPosition() const { return m_Position; }
+    inline Vector *GetOrigin() { return m_Origin;}
     virtual ~GameObject() override = default;
 
 protected:
+    Vector *m_Origin;
     Vector m_Position;
 };
 

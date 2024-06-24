@@ -16,7 +16,7 @@ using Vector = Mylib::Math::Vector<float, 2>;
 using Box = Mylib::Math::Vector<float, 4>;
 
 inline constexpr float JUMP_TIME = 0.20f;
-inline constexpr float JUMP_FORCE = 9.8f;
+inline constexpr float JUMP_FORCE = 4.0f;
 
 #include <string>
 

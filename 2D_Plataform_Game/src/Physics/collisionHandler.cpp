@@ -32,15 +32,16 @@ std::set<int> intangibleTileIDs = {1};
 
 bool CollisionHandler::MapCollision(Box box, Vector &position)
 {
-    int tileSize = 1 * UNIT_TO_PIXELS;
+    int tileSizeX = DEFAULT_UNIT_TO_PIXELS * SCALE_WIDTH;
+    int tileSizeY = DEFAULT_UNIT_TO_PIXELS * SCALE_HEIGHT;
     int RowCount = m_CollisonLayer->GetRowCount();
     int ColCount = m_CollisonLayer->GetColCount();
 
-    int left_tile = box.x / tileSize;
-    int right_tile = (box.x + box.w) / tileSize;
+    int left_tile = box.x / tileSizeX;
+    int right_tile = (box.x + box.w) / tileSizeX;
 
-    int top_tile = box.y / tileSize;
-    int bottom_tile = (box.y + box.z) / tileSize;
+    int top_tile = box.y / tileSizeY;
+    int bottom_tile = (box.y + box.z) / tileSizeY;
 
     if (left_tile < 0)
     {
@@ -66,6 +67,8 @@ bool CollisionHandler::MapCollision(Box box, Vector &position)
     float finalTranslateX = 0;
     float finalTranslateY = 0;
 
+    float tileX = 0;
+
     bool isGrounded = false;
 
     for (int j = top_tile; j <= bottom_tile; ++j)
@@ -78,11 +81,11 @@ bool CollisionHandler::MapCollision(Box box, Vector &position)
                 translateX = 0;
                 translateY = 0;
 
-                tile.x = tileSize * i;
-                tile.y = tileSize * j;
+                tile.x = tileSizeX * i;
+                tile.y = tileSizeY * j;
 
-                tile.w = tile.x + tileSize;
-                tile.z = tile.y + tileSize;
+                tile.w = tile.x + tileSizeX;
+                tile.z = tile.y + tileSizeY;
                 if ((tile.z - 1) >= box.y && (tile.y + 1) <= box.y + box.z && (tile.x + 1) <= box.x + box.w && (tile.w - 1) >= box.x)
                 {
 
@@ -98,11 +101,11 @@ bool CollisionHandler::MapCollision(Box box, Vector &position)
                         }
                         else if (tile.y >= box.y && tile.z <= (box.y + box.z / 2))
                         {
-                            translateY = tileSize;
+                            translateY = tileSizeY;
                         }
                         else if ((tile.y >= (box.y + box.z / 2) && tile.z <= (box.y + box.z)))
                         {
-                            translateY = -tileSize;
+                            translateY = -tileSizeY;
                         }
                     }
 
@@ -121,6 +124,8 @@ bool CollisionHandler::MapCollision(Box box, Vector &position)
                     if (std::abs(translateX) > 0 && std::abs(translateY) == 0)
                     {
                         finalTranslateX = translateX;
+
+                        tileX = tile.x;
                     }
                     else if (std::abs(translateY) > 0 && std::abs(translateX) == 0)
                     {
@@ -128,14 +133,15 @@ bool CollisionHandler::MapCollision(Box box, Vector &position)
                     }
                     else if (std::abs(translateX) > 0 && std::abs(translateY) > 0)
                     {
+                        if (std::abs(translateX) < std::abs(translateY) && j < bottom_tile && j > top_tile)
+                        {
+                            finalTranslateX = translateX;
 
+                            tileX = tile.x;
+                        }
                         if (std::abs(translateX) > std::abs(translateY))
                         {
                             finalTranslateY = translateY;
-                        }
-                        else
-                        {
-                            finalTranslateX = translateX;
                         }
                     }
                 }
@@ -143,20 +149,17 @@ bool CollisionHandler::MapCollision(Box box, Vector &position)
         }
     }
 
+    std::cout << "Y: " << finalTranslateY << " X: " << finalTranslateX << '\n';
+
     if (std::abs(finalTranslateY) == std::abs(finalTranslateX))
     {
         position.x += finalTranslateX;
-        position.y += finalTranslateY;
-        if (finalTranslateY < 0)
-        {
-            isGrounded = true;
-        }
     }
-    else if (std::abs(finalTranslateX) > std::abs(finalTranslateY))
+    else if (std::abs(finalTranslateX) > 0)
     {
         position.x += finalTranslateX;
     }
-    else if (std::abs(finalTranslateX) < std::abs(finalTranslateY))
+    if (std::abs(finalTranslateX) < std::abs(finalTranslateY) || std::abs(finalTranslateX) == 0)
     {
         position.y += finalTranslateY;
         if (finalTranslateY < 0)

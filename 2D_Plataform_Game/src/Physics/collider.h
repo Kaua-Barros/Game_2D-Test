@@ -21,8 +21,8 @@ public:
     void Set(float x, float y, float w, float h){
         m_Box.x = x - m_Buffer.x;
         m_Box.y = y - m_Buffer.y;
-        m_Box.w = w * UNIT_TO_PIXELS - m_Buffer.w;
-        m_Box.z = h * UNIT_TO_PIXELS - m_Buffer.z;
+        m_Box.w = w * DEFAULT_UNIT_TO_PIXELS * SCALE_WIDTH - m_Buffer.w;
+        m_Box.z = h * DEFAULT_UNIT_TO_PIXELS * SCALE_HEIGHT - m_Buffer.z;
     }
 
 private:

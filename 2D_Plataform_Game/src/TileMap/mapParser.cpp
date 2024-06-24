@@ -4,9 +4,9 @@
 
 MapParser *MapParser::s_Instance = nullptr;
 
-bool MapParser::Load()
+bool MapParser::Load(const std::string& tmxFilePath)
 {
-    return Parse("MAP", "C:/msys64/home/Kaua/SDLtemplate/2D_Plataform_Game/assets/Map/file.tmx");
+    return Parse("MAP", tmxFilePath); //"C:/msys64/home/Kaua/SDLtemplate/2D_Plataform_Game/assets/Map/file.tmx"
 }
 
 void MapParser::Clean()
@@ -50,6 +50,7 @@ bool MapParser::Parse(std::string id, std::string source)
     }
 
     GameMap* gamemap = new GameMap();
+    gamemap->SetMapDimension(colcount, rowcount);
 
     for (tinyxml2::XMLElement *e = root->FirstChildElement(); e != nullptr; e = e->NextSiblingElement())
     {

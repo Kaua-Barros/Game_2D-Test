@@ -14,8 +14,8 @@ inline constexpr float BACKWARD = -1.0f;
 inline constexpr float UPWARD = -1.0f;
 inline constexpr float DOWNWARD = 1.0f;
 
-const float VELOCITY_Y_MAX = 9.8f * (UNIT_TO_PIXELS / 32);
-const float VELOCITY_Y_MIN = -9.8f * (UNIT_TO_PIXELS / 32);
+const float VELOCITY_Y_MAX = 9.8f * (SCALE_HEIGHT);
+const float VELOCITY_Y_MIN = -9.8f * (SCALE_HEIGHT);
 
 class RigidBody
 {
@@ -56,13 +56,13 @@ public:
         {
             m_Velocity.y = VELOCITY_Y_MIN;
         }
-        position += (m_Velocity * dt) * (UNIT_TO_PIXELS);
+        position += (m_Velocity * dt) * (DEFAULT_UNIT_TO_PIXELS);
     }
 
     void UpdateX(float dt, Vector &position)
     {
         m_Velocity.x *= m_Friction / m_Mass;
-        position.x += (m_Velocity.x * dt) * (UNIT_TO_PIXELS);
+        position.x += (m_Velocity.x * dt) * (DEFAULT_UNIT_TO_PIXELS);
     }
 
     void UpdateY(float dt, Vector &position)
@@ -81,7 +81,7 @@ public:
         }
 
         // Atualiza a posição
-        position.y += (m_Velocity.y * dt) * (UNIT_TO_PIXELS);
+        position.y += (m_Velocity.y * dt) * (DEFAULT_UNIT_TO_PIXELS);
     }
 
 private:

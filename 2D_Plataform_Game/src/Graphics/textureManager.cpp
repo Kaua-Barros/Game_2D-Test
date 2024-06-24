@@ -1,7 +1,9 @@
 #include "TextureManager.h"
-#include "../Core/Engine.h"
-#include "../Global/GlobalProperties.h"
+#include "..\Global\GlobalProperties.h"
+#include "..\Core\engine.h"
+#include "..\Camera\Camera.h"
 
+using Vector = Mylib::Math::Vector<float, 2>;
 TextureManager *TextureManager::s_Instance = nullptr;
 
 textureID TextureManager::Load(std::string filename)
@@ -29,23 +31,45 @@ textureID TextureManager::Load(std::string filename)
 
 void TextureManager::Draw(textureID id, int x, int y, float width, float height, SDL_RendererFlip flip)
 {
-    SDL_Rect srcRect = {0, 0, (int)(width * UNIT_TO_PIXELS), (int)(height * UNIT_TO_PIXELS)};
-    SDL_Rect dstRect = {(int)(x), (int)(y), (int)(width * UNIT_TO_PIXELS), (int)(height * UNIT_TO_PIXELS)};
+    SDL_Rect srcRect = {0, 0, (int)(width), (int)(height)};
+
+    Vector cam = Camera::GetInstance()->GetPosition();
+    SDL_Rect dstRect = {
+        (int)(x - cam.x),
+        (int)(y - cam.y),
+        (int)((width * DEFAULT_UNIT_TO_PIXELS * SCALE_WIDTH)),
+        (int)((height * DEFAULT_UNIT_TO_PIXELS * SCALE_HEIGHT))};
     SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), *id.it, &srcRect, &dstRect, 0, nullptr, flip);
 }
 
 void TextureManager::DrawFrame(textureID id, int x, int y, float objectWidth, float objectHeight, float spriteWidth, float spriteHeight, int row, int frame, SDL_RendererFlip flip)
 {
-    SDL_Rect srcRect = {(int)((spriteWidth * frame)), (int)((spriteHeight * (row - 1))), (int)(spriteWidth), (int)(spriteHeight)};
-    SDL_Rect dstRect = {(int)(x), (int)(y), (int)(objectWidth * UNIT_TO_PIXELS), (int)(objectHeight * UNIT_TO_PIXELS)};
+    SDL_Rect srcRect = {
+        (int)(spriteWidth * frame),
+        (int)(spriteHeight * (row - 1)),
+        (int)(spriteWidth),
+        (int)(spriteHeight)};
+
+    Vector cam = Camera::GetInstance()->GetPosition();
+    SDL_Rect dstRect = {
+        (int)(x - cam.x),
+        (int)(y - cam.y),
+        (int)((objectWidth * DEFAULT_UNIT_TO_PIXELS * SCALE_WIDTH)),
+        (int)((objectHeight * DEFAULT_UNIT_TO_PIXELS * SCALE_HEIGHT))};
     SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), *id.it, &srcRect, &dstRect, 0, nullptr, flip);
 }
 
 void TextureManager::DrawTile(textureID tilesetID, int tileSize, int x, int y, int row, int frame, SDL_RendererFlip flip)
 {
-    int reSize = (UNIT_TO_PIXELS / tileSize);
     SDL_Rect srcRect = {tileSize * frame, tileSize * row, tileSize, tileSize};
-    SDL_Rect dstRect = {x * reSize, y * reSize, tileSize * reSize, tileSize * reSize};
+
+    Vector cam = Camera::GetInstance()->GetPosition();
+    //std::cout << (int)((SCALE_WIDTH)) << " , " << (int)((SCALE_HEIGHT)) << std::endl;
+    SDL_Rect dstRect = {
+        (int)((x * SCALE_WIDTH - cam.x)),
+        (int)((y * SCALE_HEIGHT - cam.y)),
+        (int)(((tileSize * SCALE_WIDTH))),
+        (int)(((tileSize * SCALE_HEIGHT)))};
     SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), *tilesetID.it, &srcRect, &dstRect, 0, nullptr, flip);
 }
 
@@ -57,7 +81,8 @@ void TextureManager::Drop(textureID id)
 
 void TextureManager::CleanTexture()
 {
-    for (auto& texture : m_TextureList) {
+    for (auto &texture : m_TextureList)
+    {
         SDL_DestroyTexture(texture);
     }
     m_TextureList.clear();

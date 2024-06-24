@@ -12,7 +12,6 @@ struct Properties
 class RectObject : public GameObject
 {
 public:
-
     Vector getSize() const { return m_Size; }
 
     virtual ~RectObject() override = default;
@@ -22,6 +21,8 @@ public:
         m_Size.y = props.Heigth;
         m_Position.x = props.X;
         m_Position.y = props.Y;
+
+        m_Origin = new Vector(props.X + (props.Width / 2) * DEFAULT_UNIT_TO_PIXELS, props.Y + (props.Heigth / 2) * DEFAULT_UNIT_TO_PIXELS);
     }
 
 protected:
