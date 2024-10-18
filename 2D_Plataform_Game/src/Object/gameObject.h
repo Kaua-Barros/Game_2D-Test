@@ -14,7 +14,9 @@ class GameObject : public IObject
 {
 public:
     Vector getPosition() const { return m_Position; }
-    inline Vector *GetOrigin() { return m_Origin;}
+    Vector& getRefPosition() { return m_Position; }
+
+    inline Vector *GetOrigin() { return m_Origin; }
     virtual ~GameObject() override = default;
 
 protected:

@@ -16,14 +16,14 @@ using Vector = Mylib::Math::Vector<float, 2>;
 using Box = Mylib::Math::Vector<float, 4>;
 
 inline constexpr float JUMP_TIME = 0.20f;
-inline constexpr float JUMP_FORCE = 4.0f;
+inline constexpr float JUMP_FORCE = 3.5f;
 
 #include <string>
 
 class Player : public Character
 {
 public:
-    Player(const Properties& props);
+    Player(const Properties &props);
     ~Player();
 
     virtual void Draw() override;
@@ -33,12 +33,13 @@ public:
 private:
     bool m_IsJumping;
     bool m_IsGrounded;
+    bool playedSound = false;
 
     float m_JumpTime;
     float m_JumpForce;
 
     textureID m_TextureID;
-    
+
     Collider m_Collider;
 
     Animation m_Animation_Run;
@@ -47,8 +48,6 @@ private:
     Animation m_Animation;
 
     RigidBody m_RigidBody;
-    
-    Vector m_LastSafePosition;
 };
 
 #endif //__PLAYER_H__

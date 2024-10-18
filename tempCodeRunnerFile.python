@@ -1,0 +1,61 @@
+vetor = [5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5]
+tamanho = len(vetor)
+
+for cont in range(tamanho - 1): # Percorre o vetor até a ultima posicao
+    print(cont)
+    for i in range(tamanho - 1): #Para cada posicao do vetor (exceto a última) compara com a próxima posicao e troca se for maior.
+        print(i, " ", tamanho)
+        if (vetor[i] > vetor[i + 1]):
+            temp = vetor[i + 1]
+            vetor[i + 1] = vetor[i]
+            vetor[i] = temp
+            # Pode ser escrito como vetor[i], vetor[i+1] = vetor[i+1], vetor[i]
+
+print("lista ordenada por bubble sort: ")
+print("[", end="")
+for i in range(tamanho):
+    print(vetor[i], end="")
+    if i < tamanho - 1:
+        print(", ", end="")
+print("]")
+
+vetor1 = [5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5]
+
+for cont in range(len(vetor1) - 1): # Percorre o vetor até a penultima posicao
+    indice_menor = cont # Seta o menor indice como a posicao atual
+    for i in range(cont + 1, len(vetor1)): # Percorre o vetor da posicao seguinte ate a ultima posicao
+        if vetor1[i] < vetor1[indice_menor]: # Compara a posicao atual com o menor vetor reconhecido
+            indice_menor = i # Caso a posicao atual seja menor que o atual menor vetor reconhecido, atualiza-se o indice menor
+    # Troca valores:
+    aux = vetor1[cont]
+    vetor1[cont] = vetor1[indice_menor]
+    vetor1[indice_menor] = aux
+
+print("lista ordenada por selection sort: ")
+print("[", end="")
+for i in range(tamanho):
+    print(vetor1[i], end="")
+    if i < tamanho - 1:
+        print(", ", end="")
+print("]")
+
+
+vetor2 = [5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5]
+
+for i in range(1, len(vetor2)):
+    comparado = vetor2[i] # Salva o elemento atual para comparacao
+    j = i - 1 # Seta j como o indice do elemento anterior para comparacao
+
+    # Continua Enquanto j ainda é uma posicao valida do Array e vetor2[j] (valor da posicao anterior) é maior que o valor comparado:
+    while j >= 0 and comparado < vetor2[j]:
+        vetor2[j + 1] = vetor2[j]
+        j -= 1
+    vetor2[j + 1] = comparado
+
+print("lista ordenada por insertion sort: ")
+print("[", end="")
+for i in range(tamanho):
+    print(vetor2[i], end="")
+    if i < tamanho - 1:
+        print(", ", end="")
+print("]")

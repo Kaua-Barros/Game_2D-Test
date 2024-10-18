@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/msys64/ucrt64/include/SDL2",
+                "C:/msys64/home/Kaua/SDLtemplate/2D_Plataform_Game/src/Vendor/my-lib/include/**",
+                "C:/msys64/home/Kaua/SDLtemplate/2D_Plataform_Game/src/Vendor/TinyXML/**",
+                "C:/msys64/home/Kaua/SDLtemplate/2D_Plataform_Game/src/Vendor/TinyXML2/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "C:/msys64/ucrt64/bin/g++.exe",
+            "cStandard": "c23",
+            "cppStandard": "c++23",
+            "intelliSenseMode": "windows-gcc-x64"
+        }
+    ],
+    "version": 4
+}

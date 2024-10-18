@@ -149,7 +149,7 @@ bool CollisionHandler::MapCollision(Box box, Vector &position)
         }
     }
 
-    std::cout << "Y: " << finalTranslateY << " X: " << finalTranslateX << '\n';
+    // std::cout << "Y: " << finalTranslateY << " X: " << finalTranslateX << '\n';
 
     if (std::abs(finalTranslateY) == std::abs(finalTranslateX))
     {
