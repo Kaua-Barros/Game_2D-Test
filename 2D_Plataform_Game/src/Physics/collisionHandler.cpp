@@ -28,7 +28,7 @@ CollisionHandler::CollisionHandler()
 #include <set>
 
 // Adicione a lista de IDs de tiles intangíveis
-std::set<int> intangibleTileIDs = {1};
+std::set<int> intangibleTileIDs = {6, 14, 23, 32, 15};
 
 bool CollisionHandler::MapCollision(Box box, Vector &position)
 {

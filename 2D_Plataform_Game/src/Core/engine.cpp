@@ -78,8 +78,8 @@ bool Engine::Init()
 
     m_LevelMap = MapParser::GetInstance()->GetMap("MAP", 0, 0);
 
-    m_Player = new Player(Properties{.Width = 2, .Heigth = 3, .X = 0, .Y = 0});
-    enemy = new Enemy(Properties{.Width = 2, .Heigth = 2, .X = 170, .Y = 30});
+    m_Player = new Player(Properties{.Width = 2, .Heigth = 3, .X = 30, .Y = 30});
+    enemy = new Enemy(Properties{.Width = 2, .Heigth = 2, .X = 90, .Y = 30});
 
     Camera::GetInstance()->SetTarget(m_Player->GetOrigin());
     Camera::GetInstance()->SetLimitPosition(m_LevelMap->GetMapPosition());
@@ -87,7 +87,7 @@ bool Engine::Init()
 
     // Toca a música de fundo
     Engine::GetInstance()->PlayMusic(0);
-    SetMusicVolume(35);
+    SetMusicVolume(70);
 
     return m_isRunning = true;
 }
